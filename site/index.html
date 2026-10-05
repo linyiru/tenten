@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<title>Tenten TC — proof</title>
+<style>
+  @font-face {
+    font-family: "Tenten TC";
+    src: url("../build/TentenTC-Big5.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+  :root { --ink: #f4f1ea; --off: #262626; }
+  body { margin: 0; padding: 48px; background: #0b0b0b; color: var(--ink); font: 14px/1.5 system-ui, sans-serif; }
+  /* One cell = font-size / 12. Sizes are multiples of 12px so every dot
+     lands on whole pixels; the dark lattice is the same grid drawn behind. */
+  .board {
+    --size: 48px;
+    --cell: calc(var(--size) / 12);
+    font-family: "Tenten TC";
+    font-size: var(--size);
+    line-height: 1;
+    font-variation-settings: "wght" var(--wght, 400), "ROND" var(--rond, 100);
+    background-image: radial-gradient(circle at center, var(--off) 0 calc(var(--cell) * 0.3), transparent calc(var(--cell) * 0.3 + 0.5px));
+    background-size: var(--cell) var(--cell);
+    width: fit-content;
+    margin: 0 0 32px;
+    white-space: pre;
+  }
+  .s24 { --size: 24px; }
+  .s96 { --size: 96px; }
+  label { display: inline-flex; gap: 8px; margin-right: 24px; align-items: center; }
+  .meta { color: #888; margin: 0 0 8px; }
+</style>
+<p class="meta">Tenten TC · 12 × 12 dots · wght / ROND</p>
+<div id="controls">
+  <label>wght <input id="w" type="range" min="100" max="900" value="400"></label>
+  <label>ROND <input id="r" type="range" min="0" max="100" value="100"></label>
+</div>
+<div class="board s96" id="hero">點陣字體</div>
+<div class="board">永和豆漿 03:45 → 台北車站
+下一班 自強號 Express 1234</div>
+<div class="board" style="--wght:100">細 Thin 天地玄黃宇宙洪荒</div>
+<div class="board" style="--wght:900">粗 Black 天地玄黃宇宙洪荒</div>
+<div class="board" style="--wght:400;--rond:0">方 Pixel 天地玄黃宇宙洪荒</div>
+<div class="board" style="--wght:900;--rond:0">方粗 Pixel Black 係優勝即劇</div>
+<div class="board s24">The quick brown fox jumps over the lazy dog. 敏捷的棕色狐狸跳過了懶狗。
+「繁體中文」與『標點符號』，、。？！：；——……</div>
+<script>
+  const set = () => {
+    for (const el of document.querySelectorAll('#hero')) {
+      el.style.setProperty('--wght', w.value); el.style.setProperty('--rond', r.value);
+    }
+  };
+  w.oninput = r.oninput = set;
+</script>
+</html>

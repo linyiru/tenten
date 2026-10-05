@@ -3,6 +3,7 @@ name = "tenten"
 version = "0.1.0"
 edition = "2024"
 description = "Builds Tenten, a variable CJK dot font, from a pixel-font BDF"
+license = "MIT"
 
 [profile.release]
 opt-level = 3

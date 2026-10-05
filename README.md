@@ -59,6 +59,9 @@ symbols, 61 are not in the source and are skipped. No hanzi are missing.
 
 ## License
 
-The fonts are licensed under the SIL Open Font License 1.1 ([OFL.txt](OFL.txt)).
-They are a Modified Version of Fusion Pixel Font, which includes glyphs from Ark
-Pixel Font, Cubic 11, and Galmuri. Their licenses are in [LICENSES/](LICENSES/).
+- **Fonts** (everything `tenten` writes into `build/`): SIL Open Font License
+  1.1, see [OFL.txt](OFL.txt). They are a Modified Version of Fusion Pixel
+  Font, which includes glyphs from Ark Pixel Font, Cubic 11, and Galmuri. Their
+  licenses are in [LICENSES/](LICENSES/).
+- **Everything else in this repository** (the Rust source, scripts, charset
+  list, and specimen page): MIT, see [LICENSE](LICENSE).

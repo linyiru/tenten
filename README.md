@@ -57,6 +57,26 @@ symbols, 61 are not in the source and are skipped. No hanzi are missing.
 `site/index.html` is a specimen page with sliders for both axes. It reads
 `build/TentenTC-Big5.woff2`.
 
+## Film
+
+`film` renders a 20-second launch film, picture and sound, from the same
+BDF. It is plain Rust like the font builder; ffmpeg only encodes.
+
+```sh
+scripts/build-film.sh                  # build/film/tenten.mp4 and tenten.wav
+scripts/build-film.sh --still 2,9.5,15 # review stills only
+```
+
+- Every frame is a pure function of time (`src/bin/film/scene.rs`), so frames
+  render in parallel and in any order. A dot's size and shape come from
+  `tenten::dot_half`, the font's own masters, so a dot on screen is the dot
+  the font draws at that `wght` and `ROND`.
+- The score (`audio.rs`) is synthesized from the event list the picture is
+  timed by: each lit dot the playhead passes is a note, its row the pitch on
+  a D minor pentatonic, and `ROND` turns the pad from sine to square.
+- The rasterizer (`raster.rs`) draws anti-aliased rounded squares with a
+  bloom, and fast camera moves are averaged over a half-frame shutter.
+
 ## License
 
 - **Fonts** (everything `tenten` writes into `build/`): SIL Open Font License

@@ -5,8 +5,8 @@
 
 use std::{env, fs, process};
 
-const CELL: i64 = 100;
-const NOTDEF: i64 = 65534;
+use tenten::{Font, Glyph, charset, parse};
+
 const UPM: i64 = 1200;
 const ASC: i64 = 1000;
 const DESC: i64 = -200;
@@ -17,75 +17,6 @@ const FIRST_GID: usize = 2;
 const DEFAULT_R: i64 = 30;
 const MAX_R: i64 = 50;
 const SEC: i64 = 1082392;
-
-#[derive(Default, Clone)]
-struct Glyph {
-    cp: i64,
-    adv: i64,
-    dots: Vec<(i64, i64)>,
-}
-
-#[derive(Default)]
-struct Font {
-    glyphs: Vec<Glyph>,
-    notdef: Glyph,
-}
-
-fn int(s: &str) -> i64 {
-    s.parse().unwrap_or(0)
-}
-
-fn parse(data: &str, keep: Option<&[bool]>) -> Font {
-    let mut f = Font::default();
-    let (mut cp, mut adv, mut w, mut h, mut xo, mut yo) = (-1i64, 0i64, 0i64, 0i64, 0i64, 0i64);
-    let mut lines = data.split('\n');
-    while let Some(line) = lines.next() {
-        if let Some(r) = line.strip_prefix("ENCODING ") {
-            cp = int(r.split_whitespace().next().unwrap_or(""));
-        } else if let Some(r) = line.strip_prefix("DWIDTH ") {
-            adv = int(r.split_whitespace().next().unwrap_or("")) * CELL;
-        } else if let Some(r) = line.strip_prefix("BBX ") {
-            let v: Vec<i64> = r.split_whitespace().map(int).collect();
-            (w, h, xo, yo) = (v[0], v[1], v[2], v[3]);
-        } else if line.starts_with("BITMAP") {
-            let mut wanted = cp == NOTDEF;
-            if (0..0x110000).contains(&cp) && cp != NOTDEF {
-                wanted = keep.is_none_or(|k| k[cp as usize]);
-            }
-            let mut dots = Vec::new();
-            for row in 0..h {
-                let Some(l) = lines.next() else { break };
-                let l = l.trim();
-                let v = u64::from_str_radix(l, 16).unwrap_or(0);
-                let bits = l.len() as i64 * 4;
-                for col in 0..w.min(bits) {
-                    if (v >> (bits - 1 - col)) & 1 == 1 {
-                        dots.push(((xo + col) * CELL + CELL / 2, (yo + h - 1 - row) * CELL + CELL / 2));
-                    }
-                }
-            }
-            if wanted {
-                let g = Glyph { cp, adv, dots };
-                if cp == NOTDEF {
-                    f.notdef = g;
-                } else {
-                    f.glyphs.push(g);
-                }
-            }
-        }
-    }
-    f
-}
-
-fn charset(data: &str) -> Vec<bool> {
-    let mut keep = vec![false; 0x110000];
-    for c in data.chars() {
-        if c != '\n' && c != '\r' {
-            keep[c as usize] = true;
-        }
-    }
-    keep
-}
 
 /// A big-endian writer.
 #[derive(Default)]

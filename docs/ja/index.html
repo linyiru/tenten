@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenten JP — 日本語</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  @font-face { font-family: "Tenten JP"; src: url("../fonts/TentenJP-JIS.woff2") format("woff2"); font-weight: 100 900; }
+</style>
+<nav><a class="home" href="../">Tenten 點點</a><a href="../">English</a><a href="../zh-TW/" lang="zh-Hant-TW">繁體中文</a><a href="../zh-CN/" lang="zh-Hans-CN">简体中文</a><a href="../ja/" lang="ja" aria-current="page">日本語</a><a href="../ko/" lang="ko">한국어</a><a href="https://github.com/linyiru/tenten">GitHub</a></nav>
+<p class="lead">可変の CJK ドットフォント。すべての字は 12 × 12 の格子に並ぶ点でできていて、変わるのは点そのものです。wght が点の大きさを、ROND が形を決め、四角いピクセルから丸い点まで変化します。</p>
+<div class="controls"><label>wght ウェイト <input id="w" type="range" min="100" max="900" value="400"><output>400</output></label><label>ROND 丸み <input id="r" type="range" min="0" max="100" value="100"><output>100</output></label></div>
+<div class="board s96 live" style='font-family: "Tenten JP"' contenteditable spellcheck="false">点々の字</div>
+<div class="board  live" style='font-family: "Tenten JP"' contenteditable spellcheck="false">渋谷 03:45 → 東京駅
+次の列車 のぞみ 1234号</div>
+<div class="board " style='font-family: "Tenten JP"; --rond:0' contenteditable spellcheck="false">いろはにほへと　ちりぬるを
+わかよたれそ　　つねならむ</div>
+<div class="board s24 live" style='font-family: "Tenten JP"' contenteditable spellcheck="false">色は匂へど散りぬるを。The quick brown fox jumps over the lazy dog.
+「日本語」と『約物』、。？！：；――……
+アイウエオ カキクケコ サシスセソ ｱｲｳｴｵ ｶｷｸｹｺ</div>
+<h2>六つの名前付きスタイル</h2>
+<div class="grid">
+<div><p>Thin · wght 100 · ROND 100</p><div class="board" style='font-family: "Tenten JP"; --wght:100; --rond:100'>てんてん 点々</div></div>
+<div><p>Regular · wght 400 · ROND 100</p><div class="board" style='font-family: "Tenten JP"; --wght:400; --rond:100'>てんてん 点々</div></div>
+<div><p>Black · wght 900 · ROND 100</p><div class="board" style='font-family: "Tenten JP"; --wght:900; --rond:100'>てんてん 点々</div></div>
+<div><p>Pixel Thin · wght 100 · ROND 0</p><div class="board" style='font-family: "Tenten JP"; --wght:100; --rond:0'>てんてん 点々</div></div>
+<div><p>Pixel Regular · wght 400 · ROND 0</p><div class="board" style='font-family: "Tenten JP"; --wght:400; --rond:0'>てんてん 点々</div></div>
+<div><p>Pixel Black · wght 900 · ROND 0</p><div class="board" style='font-family: "Tenten JP"; --wght:900; --rond:0'>てんてん 点々</div></div>
+</div>
+<h2>ダウンロード</h2>
+<p class="meta">JIS X 0208：ASCII、半角カナ、JIS X 0208 の記号・かな・漢字、計 7,010 字。</p>
+<ul class="dl">
+<li><a href="../fonts/TentenJP-JIS.woff2">TentenJP-JIS.woff2</a></li>
+<li><a href="https://github.com/linyiru/tenten/releases/latest">TentenJP-JIS.ttf · TentenJP-Full.ttf</a> — フルセット（36,980 字）</li>
+</ul>
+<footer>フォントは SIL Open Font License 1.1、字形のドットは Fusion Pixel Font によります。コードは MIT ライセンスです。 <a href="https://github.com/linyiru/tenten">https://github.com/linyiru/tenten</a></footer>
+<script>
+  for (const [id, v] of [['w', '--w'], ['r', '--r']]) {
+    const el = document.getElementById(id), out = el.nextElementSibling;
+    el.oninput = () => { document.body.style.setProperty(v, el.value); out.value = el.value; };
+  }
+</script>
+</html>

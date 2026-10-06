@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenten KR — 한국어</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  @font-face { font-family: "Tenten KR"; src: url("../fonts/TentenKR-KSX.woff2") format("woff2"); font-weight: 100 900; }
+</style>
+<nav><a class="home" href="../">Tenten 點點</a><a href="../">English</a><a href="../zh-TW/" lang="zh-Hant-TW">繁體中文</a><a href="../zh-CN/" lang="zh-Hans-CN">简体中文</a><a href="../ja/" lang="ja">日本語</a><a href="../ko/" lang="ko" aria-current="page">한국어</a><a href="https://github.com/linyiru/tenten">GitHub</a></nav>
+<p class="lead">가변 CJK 도트 글꼴. 모든 글자는 12 × 12 격자 위의 점으로 이루어지고, 변하는 것은 점 자체입니다. wght는 점의 크기를, ROND는 모양을 정하며 네모난 픽셀에서 둥근 점까지 바뀝니다.</p>
+<div class="controls"><label>wght 굵기 <input id="w" type="range" min="100" max="900" value="400"><output>400</output></label><label>ROND 둥글기 <input id="r" type="range" min="0" max="100" value="100"><output>100</output></label></div>
+<div class="board s96 live" style='font-family: "Tenten KR"' contenteditable spellcheck="false">도트글꼴</div>
+<div class="board  live" style='font-family: "Tenten KR"' contenteditable spellcheck="false">강남역 03:45 → 서울역
+다음 열차 KTX 1234</div>
+<div class="board " style='font-family: "Tenten KR"; --rond:0' contenteditable spellcheck="false">다람쥐 헌 쳇바퀴에
+타고파 天地玄黃</div>
+<div class="board s24 live" style='font-family: "Tenten KR"' contenteditable spellcheck="false">키스의 고유조건은 입술끼리 만나야 하고 특별한 기술은 필요치 않다.
+「한국어」와 『문장 부호』, . ? ! : ; …… The quick brown fox.
+ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ 가나다라마바사아자차카타파하</div>
+<h2>이름 붙은 스타일 여섯 가지</h2>
+<div class="grid">
+<div><p>Thin · wght 100 · ROND 100</p><div class="board" style='font-family: "Tenten KR"; --wght:100; --rond:100'>점점 한점한점</div></div>
+<div><p>Regular · wght 400 · ROND 100</p><div class="board" style='font-family: "Tenten KR"; --wght:400; --rond:100'>점점 한점한점</div></div>
+<div><p>Black · wght 900 · ROND 100</p><div class="board" style='font-family: "Tenten KR"; --wght:900; --rond:100'>점점 한점한점</div></div>
+<div><p>Pixel Thin · wght 100 · ROND 0</p><div class="board" style='font-family: "Tenten KR"; --wght:100; --rond:0'>점점 한점한점</div></div>
+<div><p>Pixel Regular · wght 400 · ROND 0</p><div class="board" style='font-family: "Tenten KR"; --wght:400; --rond:0'>점점 한점한점</div></div>
+<div><p>Pixel Black · wght 900 · ROND 0</p><div class="board" style='font-family: "Tenten KR"; --wght:900; --rond:0'>점점 한점한점</div></div>
+</div>
+<h2>내려받기</h2>
+<p class="meta">KS X 1001: ASCII, KS X 1001 기호·한글·한자와 현대 한글 음절 11,172자 전체, 모두 16,919자.</p>
+<ul class="dl">
+<li><a href="../fonts/TentenKR-KSX.woff2">TentenKR-KSX.woff2</a></li>
+<li><a href="https://github.com/linyiru/tenten/releases/latest">TentenKR-KSX.ttf · TentenKR-Full.ttf</a> — 전체 글꼴 (36,980자)</li>
+</ul>
+<footer>글꼴은 SIL Open Font License 1.1, 글자의 점은 Fusion Pixel Font에서 왔습니다. 코드는 MIT 라이선스입니다. <a href="https://github.com/linyiru/tenten">https://github.com/linyiru/tenten</a></footer>
+<script>
+  for (const [id, v] of [['w', '--w'], ['r', '--r']]) {
+    const el = document.getElementById(id), out = el.nextElementSibling;
+    el.oninput = () => { document.body.style.setProperty(v, el.value); out.value = el.value; };
+  }
+</script>
+</html>

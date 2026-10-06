@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hans-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenten SC — 简体中文</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  @font-face { font-family: "Tenten SC"; src: url("../fonts/TentenSC-GB2312.woff2") format("woff2"); font-weight: 100 900; }
+</style>
+<nav><a class="home" href="../">Tenten 點點</a><a href="../">English</a><a href="../zh-TW/" lang="zh-Hant-TW">繁體中文</a><a href="../zh-CN/" lang="zh-Hans-CN" aria-current="page">简体中文</a><a href="../ja/" lang="ja">日本語</a><a href="../ko/" lang="ko">한국어</a><a href="https://github.com/linyiru/tenten">GitHub</a></nav>
+<p class="lead">可变的 CJK 点阵字体。每个字都是 12 × 12 格子上的点，变化的是点本身：wght 控制点的大小，ROND 控制点的形状，从方形像素到圆点。</p>
+<div class="controls"><label>wght 字重 <input id="w" type="range" min="100" max="900" value="400"><output>400</output></label><label>ROND 圆度 <input id="r" type="range" min="0" max="100" value="100"><output>100</output></label></div>
+<div class="board s96 live" style='font-family: "Tenten SC"' contenteditable spellcheck="false">点阵字体</div>
+<div class="board  live" style='font-family: "Tenten SC"' contenteditable spellcheck="false">南京西路 03:45 → 上海虹桥
+下一班 复兴号 G1234 次</div>
+<div class="board " style='font-family: "Tenten SC"; --rond:0' contenteditable spellcheck="false">天地玄黄　宇宙洪荒
+寒来暑往　秋收冬藏</div>
+<div class="board s24 live" style='font-family: "Tenten SC"' contenteditable spellcheck="false">敏捷的棕色狐狸跳过了懒狗。The quick brown fox jumps over the lazy dog.
+“简体中文”与《标点符号》，、。？！：；——……
+ā á ǎ à  ō ó ǒ ò  ē é ě è  ī í ǐ ì  ū ú ǔ ù  ǖ ǘ ǚ ǜ</div>
+<h2>六个命名样式</h2>
+<div class="grid">
+<div><p>Thin · wght 100 · ROND 100</p><div class="board" style='font-family: "Tenten SC"; --wght:100; --rond:100'>点点 一点一点</div></div>
+<div><p>Regular · wght 400 · ROND 100</p><div class="board" style='font-family: "Tenten SC"; --wght:400; --rond:100'>点点 一点一点</div></div>
+<div><p>Black · wght 900 · ROND 100</p><div class="board" style='font-family: "Tenten SC"; --wght:900; --rond:100'>点点 一点一点</div></div>
+<div><p>Pixel Thin · wght 100 · ROND 0</p><div class="board" style='font-family: "Tenten SC"; --wght:100; --rond:0'>点点 一点一点</div></div>
+<div><p>Pixel Regular · wght 400 · ROND 0</p><div class="board" style='font-family: "Tenten SC"; --wght:400; --rond:0'>点点 一点一点</div></div>
+<div><p>Pixel Black · wght 900 · ROND 0</p><div class="board" style='font-family: "Tenten SC"; --wght:900; --rond:0'>点点 一点一点</div></div>
+</div>
+<h2>下载</h2>
+<p class="meta">GB 2312 字符集：ASCII、GB 2312 符号与汉字，共 7,368 个字符。</p>
+<ul class="dl">
+<li><a href="../fonts/TentenSC-GB2312.woff2">TentenSC-GB2312.woff2</a></li>
+<li><a href="https://github.com/linyiru/tenten/releases/latest">TentenSC-GB2312.ttf · TentenSC-Full.ttf</a> — 完整字体（36,980 字符）</li>
+</ul>
+<footer>字体以 SIL Open Font License 1.1 授权，字形点阵来自 Fusion Pixel Font。代码以 MIT 授权。 <a href="https://github.com/linyiru/tenten">https://github.com/linyiru/tenten</a></footer>
+<script>
+  for (const [id, v] of [['w', '--w'], ['r', '--r']]) {
+    const el = document.getElementById(id), out = el.nextElementSibling;
+    el.oninput = () => { document.body.style.setProperty(v, el.value); out.value = el.value; };
+  }
+</script>
+</html>

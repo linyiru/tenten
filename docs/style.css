@@ -1,0 +1,51 @@
+:root { --ink: #f4f1ea; --dim: #8a877f; --off: #242424; --bg: #0b0b0b; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 48px 48px 96px; background: var(--bg); color: var(--ink); font: 15px/1.6 system-ui, sans-serif; }
+a { color: var(--ink); }
+nav { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0 0 48px; color: var(--dim); }
+nav a { color: var(--dim); text-decoration: none; }
+nav a[aria-current] { color: var(--ink); }
+nav .home { margin-right: auto; color: var(--ink); }
+.lead { max-width: 44em; margin: 0 0 32px; }
+.meta { color: var(--dim); margin: 0 0 12px; }
+/* One cell = font-size / 12. Sizes are multiples of 12px so every dot lands
+   on whole pixels; the dark lattice behind is the same grid. */
+.board {
+  --size: 48px;
+  --cell: calc(var(--size) / 12);
+  font-size: var(--size);
+  line-height: 1;
+  font-variation-settings: "wght" var(--wght, 400), "ROND" var(--rond, 100);
+  background-image: radial-gradient(circle at center, var(--off) 0 calc(var(--cell) * 0.3), transparent calc(var(--cell) * 0.3 + 0.5px));
+  background-size: var(--cell) var(--cell);
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 0 32px;
+  white-space: pre;
+  outline: none;
+}
+.s24 { --size: 24px; }
+/* Below 4 px a cell, the lattice reads as a grey wash: leave it out. */
+.s24, .grid .board { background-image: none; }
+.s96 { --size: 96px; }
+.live { --wght: var(--w); --rond: var(--r); }
+body { --w: 400; --r: 100; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 32px; margin: 0 0 24px; }
+.controls label { display: inline-flex; gap: 10px; align-items: center; }
+.controls output { min-width: 3ch; font-variant-numeric: tabular-nums; color: var(--dim); }
+h2 { font-size: 15px; font-weight: 600; margin: 56px 0 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 8px 32px; }
+.grid .board { --size: 24px; margin: 0; }
+.grid p { margin: 16px 0 6px; color: var(--dim); }
+ul.dl { padding: 0; list-style: none; }
+ul.dl li { margin: 4px 0; }
+footer { margin-top: 64px; color: var(--dim); max-width: 44em; }
+.locales a { display: block; text-decoration: none; margin: 0 0 40px; }
+.locales .meta { margin: 8px 0 0; }
+@media (max-width: 720px) {
+  body { padding: 24px 16px 64px; }
+  .board { --size: 24px; }
+  .s96 { --size: 48px; }
+  .s24 { --size: 12px; }
+}

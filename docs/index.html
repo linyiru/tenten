@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tenten 點点々 — a variable CJK dot font</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  @font-face { font-family: "Tenten TC"; src: url("fonts/TentenTC-Big5.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Tenten SC"; src: url("fonts/TentenSC-GB2312.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Tenten JP"; src: url("fonts/TentenJP-JIS.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Tenten KR"; src: url("fonts/TentenKR-KSX.woff2") format("woff2"); font-weight: 100 900; }
+</style>
+<nav><a class="home" href="">Tenten 點點</a><a href="" aria-current="page">English</a><a href="zh-TW/" lang="zh-Hant-TW">繁體中文</a><a href="zh-CN/" lang="zh-Hans-CN">简体中文</a><a href="ja/" lang="ja">日本語</a><a href="ko/" lang="ko">한국어</a><a href="https://github.com/linyiru/tenten">GitHub</a></nav>
+<p class="lead">A variable CJK dot font. Every glyph is drawn as dots on a 12 × 12 lattice, and the dots are what vary: <code>wght</code> sets their size, <code>ROND</code> their shape, from square pixels to round dots. Four fonts, one per locale, each built from its own face of Fusion Pixel Font so every character has its local form.</p>
+<div class="controls"><label>wght <input id="w" type="range" min="100" max="900" value="400"><output>400</output></label><label>ROND <input id="r" type="range" min="0" max="100" value="100"><output>100</output></label></div>
+<div class="locales">
+<a href="zh-TW/" lang="zh-Hant-TW"><div class="board s96 live" style='font-family: "Tenten TC"'>點陣字體</div><p class="meta">Tenten TC · Big5 · 5,845 glyphs · 繁體中文 →</p></a>
+<a href="zh-CN/" lang="zh-Hans-CN"><div class="board s96 live" style='font-family: "Tenten SC"'>点阵字体</div><p class="meta">Tenten SC · GB2312 · 7,368 glyphs · 简体中文 →</p></a>
+<a href="ja/" lang="ja"><div class="board s96 live" style='font-family: "Tenten JP"'>点々の字</div><p class="meta">Tenten JP · JIS X 0208 · 7,010 glyphs · 日本語 →</p></a>
+<a href="ko/" lang="ko"><div class="board s96 live" style='font-family: "Tenten KR"'>도트글꼴</div><p class="meta">Tenten KR · KS X 1001 · 16,919 glyphs · 한국어 →</p></a>
+</div>
+<footer>Fonts: SIL Open Font License 1.1, glyph bitmaps from <a href="https://github.com/TakWolf/fusion-pixel-font">Fusion Pixel Font</a>. Code: MIT. After <a href="https://github.com/sundyme/punctum">Punctum</a>. <a href="https://github.com/linyiru/tenten">https://github.com/linyiru/tenten</a></footer>
+<script>
+  for (const [id, v] of [['w', '--w'], ['r', '--r']]) {
+    const el = document.getElementById(id), out = el.nextElementSibling;
+    el.oninput = () => { document.body.style.setProperty(v, el.value); out.value = el.value; };
+  }
+</script>
+</html>

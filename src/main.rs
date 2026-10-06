@@ -274,19 +274,85 @@ fn post(b: &mut Buf) {
     }
 }
 
-fn os2(st: &Stats, b: &mut Buf) {
+/// A script variant and what OS/2 says about it. Code page bits: 17 JIS,
+/// 18 GB2312, 19 Korean Wansung, 20 Big5.
+struct Locale {
+    tag: &'static str,
+    codepage: i64,
+}
+
+const LOCALES: [Locale; 4] = [
+    Locale { tag: "TC", codepage: 20 },
+    Locale { tag: "SC", codepage: 18 },
+    Locale { tag: "JP", codepage: 17 },
+    Locale { tag: "KR", codepage: 19 },
+];
+
+/// OS/2 Unicode range bits for the blocks the sources cover.
+const RANGES: &[(u32, i64, i64)] = &[
+    (0, 0x0000, 0x007F),
+    (1, 0x0080, 0x00FF),
+    (2, 0x0100, 0x017F),
+    (3, 0x0180, 0x024F),
+    (4, 0x0250, 0x02AF),
+    (5, 0x02B0, 0x02FF),
+    (6, 0x0300, 0x036F),
+    (7, 0x0370, 0x03FF),
+    (9, 0x0400, 0x04FF),
+    (28, 0x1100, 0x11FF),
+    (29, 0x1E00, 0x1EFF),
+    (31, 0x2000, 0x206F),
+    (33, 0x20A0, 0x20CF),
+    (35, 0x2100, 0x214F),
+    (36, 0x2150, 0x218F),
+    (37, 0x2190, 0x21FF),
+    (38, 0x2200, 0x22FF),
+    (39, 0x2300, 0x23FF),
+    (42, 0x2460, 0x24FF),
+    (43, 0x2500, 0x257F),
+    (44, 0x2580, 0x259F),
+    (45, 0x25A0, 0x25FF),
+    (46, 0x2600, 0x26FF),
+    (47, 0x2700, 0x27BF),
+    (48, 0x3000, 0x303F),
+    (49, 0x3040, 0x309F),
+    (50, 0x30A0, 0x30FF),
+    (50, 0x31F0, 0x31FF),
+    (51, 0x3100, 0x312F),
+    (51, 0x31A0, 0x31BF),
+    (52, 0x3130, 0x318F),
+    (54, 0x3200, 0x32FF),
+    (55, 0x3300, 0x33FF),
+    (56, 0xAC00, 0xD7AF),
+    (57, 0x10000, 0x10FFFF),
+    (59, 0x2E80, 0x2FDF),
+    (59, 0x3400, 0x4DBF),
+    (59, 0x4E00, 0x9FFF),
+    (59, 0x20000, 0x2FFFF),
+    (61, 0xF900, 0xFAFF),
+    (68, 0xFF00, 0xFFEF),
+];
+
+fn unicode_ranges(f: &Font) -> [i64; 4] {
+    let mut r = [0i64; 4];
+    for &(bit, lo, hi) in RANGES {
+        if f.glyphs.iter().any(|g| (lo..=hi).contains(&g.cp)) {
+            r[bit as usize / 32] |= 1 << (bit % 32);
+        }
+    }
+    r
+}
+
+fn os2(st: &Stats, ranges: [i64; 4], loc: &Locale, b: &mut Buf) {
     b.u16s(&[4, st.advsum / st.glyphs as i64, 400, 5, 0, 780, 720, 0, 100, 780, 720, 0, 400, 100, 350, 0]);
     b.u8(2);
     for _ in 1..10 {
         b.u8(0);
     }
-    b.u32(3);
-    b.u32(1 << 16 | 1 << 27);
-    b.u32(1 << 4);
-    b.u32(0);
+    ranges.iter().for_each(|&r| b.u32(r));
     b.tag("NONE");
     b.u16s(&[0x40 | 0x80, st.firstcp, st.lastcp, ASC, DESC, 0, ASC.max(st.ymax), (-DESC).max(-st.ymin)]);
-    b.u32(1 | 1 << 20);
+    b.u32(1 | 1 << loc.codepage);
     b.u32(0);
     b.u16s(&[XH, CAP, 0, 32, 0]);
 }
@@ -388,43 +454,47 @@ fn gvar(st: &Stats, b: &mut Buf) {
     b.0.extend_from_slice(&data.0);
 }
 
-const NAMES: &[(i64, &str)] = &[
-    (
-        0,
-        "Copyright 2026 The Tenten Project Authors. Glyph bitmaps from Fusion Pixel Font, Copyright (c) 2022, TakWolf (https://takwolf.com), which includes Ark Pixel Font (c) 2021 TakWolf, Cubic 11, and Galmuri (c) 2019-2025 Lee Minseo.",
-    ),
-    (1, "Tenten TC"),
-    (2, "Regular"),
-    (3, "0.100;NONE;TentenTC-Regular"),
-    (4, "Tenten TC Regular"),
-    (5, "Version 0.100"),
-    (6, "TentenTC-Regular"),
-    (13, "This Font Software is licensed under the SIL Open Font License, Version 1.1."),
-    (14, "https://openfontlicense.org"),
-    (256, "Weight"),
-    (257, "Roundness"),
-    (258, "Thin"),
-    (259, "Regular"),
-    (260, "Black"),
-    (261, "Pixel Thin"),
-    (262, "Pixel Regular"),
-    (263, "Pixel Black"),
-];
+fn names(loc: &Locale) -> Vec<(i64, String)> {
+    let (family, ps) = (format!("Tenten {}", loc.tag), format!("Tenten{}-Regular", loc.tag));
+    let fixed = [
+        (
+            0,
+            "Copyright 2026 The Tenten Project Authors. Glyph bitmaps from Fusion Pixel Font, Copyright (c) 2022, TakWolf (https://takwolf.com), which includes Ark Pixel Font (c) 2021 TakWolf, Cubic 11, and Galmuri (c) 2019-2025 Lee Minseo.",
+        ),
+        (2, "Regular"),
+        (5, "Version 0.100"),
+        (13, "This Font Software is licensed under the SIL Open Font License, Version 1.1."),
+        (14, "https://openfontlicense.org"),
+        (256, "Weight"),
+        (257, "Roundness"),
+        (258, "Thin"),
+        (259, "Regular"),
+        (260, "Black"),
+        (261, "Pixel Thin"),
+        (262, "Pixel Regular"),
+        (263, "Pixel Black"),
+    ];
+    let mut v: Vec<(i64, String)> = fixed.iter().map(|&(id, s)| (id, s.to_string())).collect();
+    v.extend([(1, family.clone()), (3, format!("0.100;NONE;{ps}")), (4, format!("{family} Regular")), (6, ps)]);
+    v.sort_by_key(|n| n.0);
+    v
+}
 
-fn name(b: &mut Buf) {
+fn name(loc: &Locale, b: &mut Buf) {
+    let names = names(loc);
     let (mut strs, mut recs) = (Buf::default(), Buf::default());
-    for &(id, s) in NAMES {
+    for (id, s) in &names {
         let off = strs.len();
         s.bytes().for_each(|c| strs.u16(c as i64));
-        recs.u16s(&[3, 1, 0x409, id, s.len() as i64 * 2, off]);
+        recs.u16s(&[3, 1, 0x409, *id, s.len() as i64 * 2, off]);
     }
-    let n = NAMES.len() as i64;
+    let n = names.len() as i64;
     b.u16s(&[0, n, 6 + n * 12]);
     b.0.extend_from_slice(&recs.0);
     b.0.extend_from_slice(&strs.0);
 }
 
-fn build(f: &Font) -> Vec<u8> {
+fn build(f: &Font, loc: &Locale) -> Vec<u8> {
     let glyphs = f.glyphs.len() + FIRST_GID;
     let mut st = Stats {
         glyphs,
@@ -451,7 +521,8 @@ fn build(f: &Font) -> Vec<u8> {
         fill(&mut b);
         t.push((tag, b));
     };
-    add("OS/2", &|b| os2(&st, b));
+    let ranges = unicode_ranges(f);
+    add("OS/2", &|b| os2(&st, ranges, loc, b));
     add("STAT", &stat);
     add("cmap", &|b| cmap(f, b));
     add("fvar", &fvar);
@@ -462,7 +533,7 @@ fn build(f: &Font) -> Vec<u8> {
     add("hmtx", &|b| hmtx(&st, b));
     add("loca", &|b| b.0 = locab.0.clone());
     add("maxp", &|b| maxp(&st, b));
-    add("name", &name);
+    add("name", &|b| name(loc, b));
     add("post", &post);
     assemble(&t)
 }
@@ -500,15 +571,22 @@ fn die(msg: &str, code: i32) -> ! {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        die("usage: tenten <in.bdf> <out.ttf> [charset.txt]", 64);
+    let mut args: Vec<String> = env::args().skip(1).collect();
+    let mut tag = "TC".to_string();
+    if let Some(i) = args.iter().position(|a| a == "--locale") {
+        tag = args.get(i + 1).cloned().unwrap_or_default();
+        args.drain(i..(i + 2).min(args.len()));
     }
-    let keep = args.get(3).map(|p| charset(&fs::read_to_string(p).unwrap_or_else(|_| die("tenten: cannot read charset", 1))));
-    let input = fs::read_to_string(&args[1]).unwrap_or_else(|_| die("tenten: cannot read bdf", 1));
+    let usage = "usage: tenten [--locale TC|SC|JP|KR] <in.bdf> <out.ttf> [charset.txt]";
+    let loc = LOCALES.iter().find(|l| l.tag == tag).unwrap_or_else(|| die(usage, 64));
+    if args.len() < 2 {
+        die(usage, 64);
+    }
+    let keep = args.get(2).map(|p| charset(&fs::read_to_string(p).unwrap_or_else(|_| die("tenten: cannot read charset", 1))));
+    let input = fs::read_to_string(&args[0]).unwrap_or_else(|_| die("tenten: cannot read bdf", 1));
     let f = parse(&input, keep.as_deref());
-    let out = build(&f);
-    fs::write(&args[2], &out).unwrap_or_else(|_| die("tenten: cannot write font", 1));
+    let out = build(&f, loc);
+    fs::write(&args[1], &out).unwrap_or_else(|_| die("tenten: cannot write font", 1));
     let ndots: usize = f.glyphs.iter().map(|g| g.dots.len()).sum::<usize>() + f.notdef.dots.len();
     println!("glyphs {} dots {} bytes {}", f.glyphs.len(), ndots, out.len());
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Downloads the Fusion Pixel 12px monospaced BDF release and unpacks the
-# zh_TW face into source/. The archive is pinned by version and sha256.
+# zh_TW, zh_Hans, ja and ko faces into source/. The archive is pinned by version and sha256.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -15,5 +15,9 @@ if [ ! -f "source/$ZIP" ]; then
   mv "source/$ZIP.part" "source/$ZIP"
 fi
 echo "$SHA256  source/$ZIP" | sha256sum -c -
-unzip -o -q -j "source/$ZIP" fusion-pixel-12px-monospaced-zh_tw.bdf -d source
-echo "source/fusion-pixel-12px-monospaced-zh_tw.bdf"
+BDFS=()
+for face in zh_tw zh_hans ja ko; do
+  BDFS+=("fusion-pixel-12px-monospaced-$face.bdf")
+done
+unzip -o -q -j "source/$ZIP" "${BDFS[@]}" -d source
+printf 'source/%s\n' "${BDFS[@]}"
